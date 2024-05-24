@@ -111,14 +111,4 @@ router.post("/add-user", async (req, res) => {
   }
 });
 
-router.get("/get-users", async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.status(200).send(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Something went wrong");
-  }
-});
-
 module.exports = router;
