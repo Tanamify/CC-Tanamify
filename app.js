@@ -10,6 +10,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api", protectedRoutes); // Gunakan protected routes
+app.use("/api", protectedRoutes);
 
 module.exports = app;
