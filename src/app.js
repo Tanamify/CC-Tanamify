@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const authRoutes = require("./routes/routeAuth");
-const authpredict = require("./routes/routesPredict");
-const protectedRoutes = require("./routes/protectedRoutes"); // Import protected routes
+const authRoutes = require("../routes/routeAuth");
+const authpredict = require("../routes/routesPredict");
+const protectedRoutes = require("../routes/protectedRoutes"); // Import protected routes
 const cookieParser = require("cookie-parser");
 const authenticateToken = require("./middleware/authenticateToken");
 

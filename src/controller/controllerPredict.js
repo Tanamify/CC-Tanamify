@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const Predict = require("../model/predict");
+const Predict = require("../../model/predict");
 
 const addPrediction = async (req, res) => {
   try {
