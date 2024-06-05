@@ -1,14 +1,13 @@
-// routesPredict.js
-
-const authJWT = require("../middleware/authJWT");
+const fs = require("fs");
+const path = require("path");
 const Predict = require("../model/predict");
 
-// Controller untuk menambahkan prediksi baru
 const addPrediction = async (req, res) => {
   try {
     const { result, description, createdAt } = req.body;
     const userId = req.user.id;
-    const newPredictionId = await Predict.create(userId, result, description, createdAt);
+    const image = req.file ? req.file.filename : null; // Ambil nama file gambar jika di-upload
+    const newPredictionId = await Predict.create(userId, result, description, createdAt, image);
     res.status(201).json({ id: newPredictionId, message: "Prediction created successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });

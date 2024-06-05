@@ -3,10 +3,11 @@ const mysql = require("mysql2/promise");
 const connectDB = async () => {
   try {
     const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "",
-      database: "tanamify-tes",
+      host: "34.128.92.132",
+      port: 3306,
+      user: "tanamify",
+      password: "root",
+      database: "tanamify",
     });
     console.log("MySQL connected...");
     return connection;
