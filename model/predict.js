@@ -1,9 +1,9 @@
 const db = require("../config/db");
 
 const Predict = {
-  async create(userId, resultValue, description, createdAt) {
+  async create(userId, resultValue, description, createdAt, image) {
     const connection = await db();
-    const [result] = await connection.query("INSERT INTO predict (id, result, description, createdAt) VALUES (?, ?, ?, ?)", [userId, resultValue, description, createdAt]); // Gunakan resultValue di sini
+    const [result] = await connection.query("INSERT INTO predict (id, result, description, createdAt, image) VALUES (?, ?, ?, ?, ?)", [userId, resultValue, description, new Date(), image]);
     return result.insertId;
   },
 
