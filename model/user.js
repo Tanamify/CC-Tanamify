@@ -13,15 +13,21 @@ const User = {
     return rows[0];
   },
 
+  async findById(id) {
+    const connection = await db();
+    const [rows] = await connection.query("SELECT * FROM users WHERE id = ?", [id]);
+    return rows[0];
+  },
+
   async updateLoginAt(id) {
     const connection = await db();
-    const [result] = await connection.query("UPDATE users SET loginAt = ? WHERE id = ?", [new Date(), id]);
+    const [result] = await connection.query("UPDATE users SET loginAt = ?, sesi = 1 WHERE id = ?", [new Date(), id]);
     return result;
   },
 
   async updateLogoutAt(id) {
     const connection = await db();
-    const [result] = await connection.query("UPDATE users SET logoutAt = ? WHERE id = ?", [new Date(), id]);
+    const [result] = await connection.query("UPDATE users SET logoutAt = ?, sesi = 0 WHERE id = ?", [new Date(), id]);
     return result;
   },
 };

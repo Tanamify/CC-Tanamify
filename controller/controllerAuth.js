@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 const { v4: uuidv4 } = require("uuid");
+const { use } = require("../app");
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[.@$!%*?&])[A-Za-z\d.@$!%*?&]{8,}$/;
 
@@ -78,13 +79,14 @@ const login = async (req, res) => {
     // Update loginAt
     await User.updateLoginAt(user.id);
 
-    // Create JWT token
-    const token = jwt.sign({ id: user.id }, "test123", { expiresIn: "1h" });
+    // Generate new access token
+    const newAccessToken = jwt.sign({ id: user.id }, "test123", { expiresIn: "1h" });
 
     res.status(200).json({
       status: "success",
-      message: "Anda berhasil login",
-      token: token,
+      message: "Login successful",
+      token: newAccessToken,
+      userId: user.id,
     });
   } catch (err) {
     console.error(err.message);
@@ -119,18 +121,25 @@ const refreshToken = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 // Endpoint api/auth/logout
 const logout = async (req, res) => {
   try {
     const userId = req.user.id;
 
+    const tokenDeleted = await checkTokenDeleted(userId);
+    if (tokenDeleted) {
+      return res.status(400).json({
+        status: "error",
+        message: "Token has already been deleted",
+      });
+    }
+
     res.clearCookie("token");
 
-    // Berikan respons setelah berhasil logout
+    await User.updateLogoutAt(userId);
     res.status(200).json({
       status: "success",
-      message: "Anda berhasil logout",
+      message: "Logout sucessful",
       userId: userId,
     });
   } catch (err) {
@@ -139,6 +148,20 @@ const logout = async (req, res) => {
       status: "error",
       message: "Server Error",
     });
+  }
+};
+
+const checkTokenDeleted = async (userId) => {
+  try {
+    // Logic to check if token has been deleted (e.g., check logoutAt column)
+    const user = await User.findById(userId);
+    if (user && user.sesi === 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err.message);
+    return true;
   }
 };
 
