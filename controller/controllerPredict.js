@@ -26,17 +26,7 @@ const getPredictionsByUserId = async (req, res) => {
   try {
     const userId = req.user.id;
     const predictions = await Predict.findByUserId(userId);
-    res.status(200).json({
-      status: "success",
-      data: [
-        {
-          id: 1,
-          result: "Example prediction",
-          description: "This is an example",
-          image: "path/to/image.jpg",
-        },
-      ],
-    });
+    res.status(200).json({ predictions });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
