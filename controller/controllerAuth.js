@@ -39,6 +39,8 @@ const register = async (req, res) => {
     // Create JWT token
     const token = jwt.sign({ id: userId }, "test123", { expiresIn: "1h" });
 
+    console.log("Generated Token on Register:", token);
+
     res.status(201).json({
       status: "success",
       message: "Anda berhasil register",
@@ -81,6 +83,8 @@ const login = async (req, res) => {
 
     // Generate new access token
     const newAccessToken = jwt.sign({ id: user.id }, "test123", { expiresIn: "1h" });
+
+    console.log("Generated Token on Login:", newAccessToken);
 
     res.status(200).json({
       status: "success",
