@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 const { v4: uuidv4 } = require("uuid");
 const { use } = require("../app");
+const { create } = require("../model/predict");
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[.@$!%*?&])[A-Za-z\d.@$!%*?&]{8,}$/;
 
@@ -39,12 +40,15 @@ const register = async (req, res) => {
     // Create JWT token
     const token = jwt.sign({ id: userId }, "test123", { expiresIn: "1h" });
 
+    const currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+
     console.log("Generated Token on Register:", token);
 
     res.status(201).json({
       status: "success",
       message: "Anda berhasil register",
       token: token,
+      createdAt: currentTime,
     });
   } catch (err) {
     console.error(err.message);
@@ -83,6 +87,7 @@ const login = async (req, res) => {
 
     // Generate new access token
     const newAccessToken = jwt.sign({ id: user.id }, "test123", { expiresIn: "1h" });
+    const currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
 
     console.log("Generated Token on Login:", newAccessToken);
 
@@ -91,6 +96,7 @@ const login = async (req, res) => {
       message: "Login successful",
       token: newAccessToken,
       userId: user.id,
+      loginAt: currentTime,
     });
   } catch (err) {
     console.error(err.message);
@@ -138,6 +144,7 @@ const logout = async (req, res) => {
       });
     }
 
+    const currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
     res.clearCookie("token");
 
     await User.updateLogoutAt(userId);
@@ -145,6 +152,7 @@ const logout = async (req, res) => {
       status: "success",
       message: "Logout sucessful",
       userId: userId,
+      logoutAt: currentTime,
     });
   } catch (err) {
     console.error(err.message);
@@ -169,4 +177,33 @@ const checkTokenDeleted = async (userId) => {
   }
 };
 
-module.exports = { register, login, logout, refreshToken };
+const checkLogged = async (req, res, next) => {
+  try {
+    const token = req.header("Authorization");
+
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    jwt.verify(token.split(" ")[1], "test123", async (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid token" });
+      }
+
+      const user = await User.findById(decoded.id);
+
+      // Memeriksa apakah pengguna ada
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      req.user = user;
+      next();
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+module.exports = { register, login, logout, refreshToken, checkLogged };

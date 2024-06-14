@@ -6,14 +6,17 @@ const addPrediction = async (req, res) => {
   try {
     const { result, description, createdAt } = req.body;
     const userId = req.user.id;
-    const image = req.file ? req.file.filename : null; // Ambil nama file gambar jika di-upload
-    const newPredictionId = await Predict.create(userId, result, description, createdAt, image);
+    const image = req.file ? req.file.filename : null;
+    const currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+
+    const newPredictionId = await Predict.create(userId, result, description, currentTime, image);
     res.status(201).json({
       status: "success",
       message: "Prediction created successfully",
       data: {
         result,
         description,
+        createdAt: currentTime,
         image,
       },
     });
