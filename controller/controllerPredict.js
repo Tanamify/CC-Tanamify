@@ -7,7 +7,7 @@ const addPrediction = async (req, res) => {
     const { result, soil, temp, humidity, rain, sun } = req.body;
     const userId = req.user.id;
     const image = req.file ? req.file.filename : null;
-    const currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+    const currentTime = new Date().toLocaleString({ timeZone: "Asia/Jakarta" });
 
     const newPredictionId = await Predict.create(userId, result, soil, temp, humidity, rain, sun, currentTime, image);
     res.status(201).json({
