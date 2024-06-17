@@ -1,12 +1,20 @@
 const db = require("../config/db");
 
 const Predict = {
-  async create(userId, resultValue, description, createdAt, image) {
+  async create(userId, result, soil, temp, humidity, rain, sun, createdAt, image) {
     const connection = await db();
-    const currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
-
-    const [result] = await connection.query("INSERT INTO predict (id, result, description, createdAt, image) VALUES (?, ?, ?, ?, ?)", [userId, resultValue, description, currentTime, image]); // Gunakan resultValue di sini
-    return result.insertId;
+    const [queryResult] = await connection.query("INSERT INTO predict (id, result, soil, temp, humidity, rain, sun, createdAt, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+      userId,
+      result,
+      soil,
+      temp,
+      humidity,
+      rain,
+      sun,
+      new Date(),
+      image,
+    ]);
+    return queryResult.insertId;
   },
 
   async findByUserId(userId) {
