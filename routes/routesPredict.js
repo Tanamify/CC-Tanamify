@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { addPrediction, getPredictionsByUserId } = require("../controller/controllerPredict");
+const { addPrediction, getPredictionsByUserId, deletePrediction } = require("../controller/controllerPredict");
 const authJWT = require("../middleware/authJWT");
 const multer = require("multer");
 
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Folder untuk menyimpan file gambar
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname); // Nama file unik dengan timestamp
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
@@ -21,5 +21,8 @@ router.post("/add", authJWT, upload.single("image"), addPrediction);
 
 // Mendapatkan prediksi berdasarkan ID pengguna
 router.get("/user-predictions", authJWT, getPredictionsByUserId);
+
+// Delete
+router.put("/delete/:idpred", authJWT, deletePrediction);
 
 module.exports = router;
