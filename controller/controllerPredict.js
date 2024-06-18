@@ -43,7 +43,32 @@ const getPredictionsByUserId = async (req, res) => {
   }
 };
 
+const deletePrediction = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const idpred = req.params.idpred;
+
+    const deleteResult = await Predict.delete(userId, idpred);
+
+    if (deleteResult.updatedRows > 0) {
+      res.status(200).json({
+        status: "success",
+        message: `Prediction with id ${idpred} for user ${userId} has been deleted.`,
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: `Prediction with id ${idpred} not found for user ${userId}.`,
+      });
+    }
+  } catch (error) {
+    console.error("Error in deletePrediction:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addPrediction,
   getPredictionsByUserId,
+  deletePrediction,
 };
