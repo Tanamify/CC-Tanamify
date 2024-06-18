@@ -4,10 +4,14 @@ const Predict = require("../model/predict");
 
 const addPrediction = async (req, res) => {
   try {
-    const { result, soil, temp, humidity, rain, sun } = req.body;
+    const { result, soil, temp, humidity, rain, sun, image } = req.body;
     const userId = req.user.id;
-    const image = req.file ? req.file.filename : null;
+    // const cleanedImage = image ? image.trim() : null;
     const currentTime = new Date().toLocaleString({ timeZone: "Asia/Jakarta" });
+
+    console.log("Received image:", image); // Debugging: log the received image
+
+    // console.log("Cleaned image:", cleanedImage); // Debugging: log the cleaned image
 
     const newPredictionId = await Predict.create(userId, result, soil, temp, humidity, rain, sun, currentTime, image);
     res.status(201).json({
