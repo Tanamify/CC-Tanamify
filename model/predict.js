@@ -56,7 +56,7 @@ const Predict = {
   async findByUserId(userId) {
     const connection = await db();
     try {
-      const [rows] = await connection.query("SELECT * FROM predict WHERE id = ? AND status = '0'", [userId]);
+      const [rows] = await connection.query("SELECT * FROM predict WHERE id = ? AND status = '0' ORDER BY idpred DESC", [userId]);
       return rows;
     } catch (error) {
       throw error;
