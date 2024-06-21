@@ -36,12 +36,6 @@ This repository contains the backend API for the Tanamify project. The backend i
     ```
 3. Set up MySQL database on Google Cloud Compute Engine.
 
-4. Configure environment variables:
-    ```sh
-    cp .env.example .env
-    ```
-   Update the `.env` file with your database credentials and other necessary configuration.
-
 ### Running the API
 
 Start the server:
